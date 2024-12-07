@@ -91,15 +91,13 @@ def update_google_sheet(sheet, start_row=2):
                 print(f"Error updating row {i}: {e}")
 
 
-if __name__ == "__main__":
+def runThisThing(request):
     
     project_id = os.getenv('GCP_PROJECT_NAME')
     secret_id = os.getenv('GCP_SECRET_NAME')
     credentials = get_credentials(project_id, secret_id)
-    SHEET_NAME = "crypto portfolio"  # Update with your sheet name
-
-    # Authenticate and access the sheet
+    SHEET_NAME = "crypto portfolio"
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
-
-    # Update the sheet with wallet balances and values
     update_google_sheet(sheet)
+
+    return 'Sheets updated successfully!', 200
