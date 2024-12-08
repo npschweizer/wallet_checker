@@ -1,3 +1,6 @@
+options:
+  logsbucket: gs://wallet-checker/
+  
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
