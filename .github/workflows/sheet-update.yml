@@ -23,6 +23,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify secret
+        run: |
+          if [ -z "${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}" ]; then
+            echo "Secret not set!"
+            exit 1
+          else
+            echo "Secret is set."
+          fi
+
       - name: Set up Google Sheets API credentials
         env:  
           SHEET_NAME: ${{ secrets.SHEET_NAME }}
