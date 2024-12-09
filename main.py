@@ -91,5 +91,6 @@ if __name__ == "__main__":
     if not SHEET_NAME:
         print("Environment variables 'SHEET_NAME' is not set.", file=sys.stderr)
         sys.exit(1)
+    credentials = json.loads(credentials)
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
     update_google_sheet(sheet)
