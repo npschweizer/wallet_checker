@@ -83,8 +83,8 @@ def update_google_sheet(sheet, start_row=2):
 
 def runThisThing(request):
     
-    with open("secret.json", "r") as f:
-      credentials = json.load(f)
+    credentials = os.getenv("secret.json")
+    SHEET_NAME = os.getenv("SHEET_NAME")
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
     update_google_sheet(sheet)
 
