@@ -1,17 +1,7 @@
 import gspread
 import requests
 import json
-from google.colab import drive
-from google.cloud import secretmanager
 import os
-
-
-def get_credentials(project_id, secret_id):
-    client = secretmanager.SecretManagerServiceClient()
-    name = "projects/{project_id}/secrets/{secret_id}/versions/latest"
-    response = client.access_secret_version(request={"name": name})
-    secret_json = response.payload.data.decode("UTF-8")
-    return json.loads(secret_json)
 
 def authenticate_google_sheets(credentials, sheet_name):
     gc = gspread.service_account_from_dict(credentials)
@@ -93,10 +83,8 @@ def update_google_sheet(sheet, start_row=2):
 
 def runThisThing(request):
     
-    project_id = os.getenv('GCP_PROJECT_NAME')
-    secret_id = os.getenv('GCP_SECRET_NAME')
-    credentials = get_credentials(project_id, secret_id)
-    SHEET_NAME = "crypto portfolio"
+    with open("secret.json", "r") as f:
+      credentials = json.load(f)
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
     update_google_sheet(sheet)
 

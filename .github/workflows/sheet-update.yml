@@ -1,0 +1,35 @@
+name: Update Google Sheets
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Runs hourly
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  update-sheets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Set up Google Sheets API credentials
+        run: |
+          echo "${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}" > secret.json  # Write the secret to a file
+          SHEET_NAME: ${{ secrets.SHEET_NAME }}
+
+      - name: Run the script
+        run: |
+          python update_sheets.py
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: secret.json
