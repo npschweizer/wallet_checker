@@ -26,10 +26,11 @@ jobs:
       - name: Set up Google Sheets API credentials
         run: |
           echo "${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}" > secret.json  # Write the secret to a file
+        env:  
           SHEET_NAME: ${{ secrets.SHEET_NAME }}
 
       - name: Run the script
         run: |
-          python update_sheets.py
+          python main.py
         env:
           GOOGLE_APPLICATION_CREDENTIALS: secret.json

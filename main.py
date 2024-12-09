@@ -2,6 +2,7 @@ import gspread
 import requests
 import json
 import os
+import sys
 
 def authenticate_google_sheets(credentials, sheet_name):
     gc = gspread.service_account_from_dict(credentials)
@@ -81,11 +82,14 @@ def update_google_sheet(sheet, start_row=2):
                 print(f"Error updating row {i}: {e}")
 
 
-def runThisThing(request):
-    
-    credentials = os.getenv("secret.json")
+if __name__ == "__main__":
+    credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     SHEET_NAME = os.getenv("SHEET_NAME")
+    if not credentials:
+        print("Environment variables 'secret.json' is not set.", file=sys.stderr)
+        sys.exit(1)
+    if not SHEET_NAME:
+        print("Environment variables 'SHEET_NAME' is not set.", file=sys.stderr)
+        sys.exit(1)
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
     update_google_sheet(sheet)
-
-    return 'Sheets updated successfully!', 200
