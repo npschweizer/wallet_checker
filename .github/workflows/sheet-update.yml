@@ -24,13 +24,14 @@ jobs:
           pip install -r requirements.txt
 
       - name: Set up Google Sheets API credentials
-        run: |
-          echo "${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}" > secret.json  # Write the secret to a file
         env:  
           SHEET_NAME: ${{ secrets.SHEET_NAME }}
+        run: |
+          echo "${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}" > secret.json  # Write the secret to a file
 
       - name: Run the script
-        run: |
-          python main.py
         env:
           GOOGLE_APPLICATION_CREDENTIALS: secret.json
+          SHEET_NAME: ${{ secrets.SHEET_NAME }}
+        run: |
+          python main.py
