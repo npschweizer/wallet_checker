@@ -40,7 +40,7 @@ jobs:
 
       - name: Run the script
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: secret.json
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.WALLET_CHECKER_SHEETS_API_KEY }}
           SHEET_NAME: ${{ secrets.SHEET_NAME }}
         run: |
           python main.py
