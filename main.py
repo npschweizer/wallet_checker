@@ -85,6 +85,7 @@ def update_google_sheet(sheet, start_row=2):
 if __name__ == "__main__":
     credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     SHEET_NAME = os.getenv("SHEET_NAME")
+    print(credentials)
     if not credentials:
         print("Environment variables 'secret.json' is not set.", file=sys.stderr)
         sys.exit(1)
