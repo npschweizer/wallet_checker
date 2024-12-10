@@ -70,7 +70,6 @@ def get_crypto_price(crypto):
 
 # Update Google Sheets
 def update_google_sheet(sheet, start_row=2):
-    # Read wallet addresses and cryptocurrencies from the sheet
     wallet_addresses = sheet.col_values(1)[start_row - 1:]
     cryptos = sheet.col_values(2)[start_row - 1:]
     for i, (wallet, crypto) in enumerate(zip(wallet_addresses, cryptos), start=start_row):
@@ -99,4 +98,5 @@ if __name__ == "__main__":
     print("converting to json")
     credentials = json.loads(credentials)
     sheet = authenticate_google_sheets(credentials, SHEET_NAME)
+    print(sheet)
     update_google_sheet(sheet)
