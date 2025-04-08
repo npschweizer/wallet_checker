@@ -3,7 +3,7 @@ import requests
 import json
 import os
 import sys
-import pandas
+import pandas as pd
 
 
 
