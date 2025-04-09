@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import pandas as pd
+from datetime import datetime
 
 
 
@@ -133,6 +134,8 @@ def get_wallet_balance(wallet_address, crypto):
       data = response.json()
       balance = float(data['balance']['total'])
       staked_balance = float(data['balance']['stake'])
+      time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+      status = f"Good as of {time_now}."
     elif crypto == "DOGE":
       url = f"https://dogechain.info/api/v1/address/balance/{wallet_address}"
       response = requests.get(url)
@@ -268,6 +271,8 @@ def get_wallet_balance(wallet_address, crypto):
       data = response.json()
       balance = float(data['balance']) / 10 ** 6 
       staked_balance = float(data['stakedBalance']) / 10 ** 6
+      time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+      status = f"Good as of {time_now}."
     elif crypto == "UNI":
       url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x5C69bEe701ef814a2B6a3EDD4B4aBC2c79b3bF8e&address={wallet_address}&tag=latest"
       response = requests.get(url)
@@ -305,13 +310,14 @@ def get_wallet_balance(wallet_address, crypto):
         staked_balance = float(staked_result["result"]["stakers"].get(wallet_address, 0)) / 10 ** 12
       else:
         staked_balance = 0.0
-    elif etherscan_lookup['Ticker'].str.contains(crypto).any():
-       # TODO
-       balance = 0
-       staked_balance = 0
+    #elif etherscan_lookup['Ticker'].str.contains(crypto).any():
+    #   # TODO
+    #   balance = 0
+    #   staked_balance = 0
     else:
       balance = 0
       staked_balance = 0
+      status = "Not found"
     return balance, staked_balance
 
 # Fetch current crypto price in USD
@@ -329,9 +335,17 @@ def update_google_sheet(sheet, start_row=2):
         if wallet and crypto:
             try:
                 balance, staked_balance = get_wallet_balance(wallet, crypto)
+                if 'status' not in globals():
+                  time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                  status = f"Good as of {time_now}. Staked value unavailable or inapplicable"
                 sheet.update_cell(i, 3, balance)
                 sheet.update_cell(i, 4, staked_balance)
+                sheet.update_cell(i, 5, status)
             except Exception as e:
+                status = "Error"
+                sheet.update_cell(i, 3, balance)
+                sheet.update_cell(i, 4, staked_balance)
+                sheet.update_cell(i, 5, status)
                 print(f"Error updating row {i}: {e}")
 
 
