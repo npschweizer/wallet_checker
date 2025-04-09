@@ -189,7 +189,7 @@ def get_wallet_balance(wallet_address, crypto):
       balance = float(data['result']) / 10 ** 18
       staked_balance = 0 # Not implemented
     elif crypto == "RVN":
-      url = f"https://rvn.cryptoscope.io/api/addr/{wallet_address}"
+      url = f"https://rvn.cryptoscope.io/api/getaddress/?address={wallet_address}"
       response = requests.get(url)
       data = response.json()
       balance = float(data['balance'])
@@ -207,7 +207,7 @@ def get_wallet_balance(wallet_address, crypto):
       balance = float(data['data']['lamports']) / 10 ** 9 
       staked_balance = 0 # Not implemented
     elif crypto == "TON":
-      url = f"https://tonapi.io/v1/account/{wallet_address}/balance"
+      url = f"https://tonapi.io/v2/accounts/{wallet_address}"
       response = requests.get(url)
       data = response.json()
       balance = float(data['balance']) / 10 ** 9
@@ -222,7 +222,7 @@ def get_wallet_balance(wallet_address, crypto):
       url = f"https://api.tronscan.org/api/account?address={wallet_address}"
       response = requests.get(url)
       data = response.json()
-      balance = float(data['data']['balance']) / 10 ** 6  
+      balance = float(data['tokenBalances'][0]['amount'])  
       staked_balance = 0  # Not implemented
     elif crypto == "WIF":
       url = f"https://api.solscan.io/account/{wallet_address}"
@@ -243,17 +243,31 @@ def get_wallet_balance(wallet_address, crypto):
       balance = float(data['balances'][0]['balance'])  
       staked_balance = 0  # N/A
     elif crypto == "XRP":
-      url = f"https://data.ripple.com/v2/accounts/{wallet_address}/balances"
-      response = requests.get(url)
+      url = "http://s1.ripple.com:51234/"
+      headers = {"Content-Type": "application/json"}
+
+      payload = {
+          "method": "account_info",
+          "params": [
+              {
+                  "account": wallet_address,
+                  "strict": True,
+                  "ledger_index": "validated",
+                  "api_version": 1
+              }
+          ]
+      }
+
+      response = requests.post(url, headers=headers, data=json.dumps(payload))
       data = response.json()
-      balance = float(data['balances'][0]['value'])  # XRP balance
-      staked_balance = 0 # N/A
+      balance = float(data['result']['account_data']['Balance']) / 10 ** 6
+      staked_balance = 0
     elif crypto == "XTZ":
       url = f"https://api.tzkt.io/v1/accounts/{wallet_address}"
       response = requests.get(url)
       data = response.json()
       balance = float(data['balance']) / 10 ** 6 
-      staked_balance = float(data['stakingBalance']) / 10 ** 6
+      staked_balance = float(data['stakedBalance']) / 10 ** 6
     elif crypto == "UNI":
       url = f"https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0x5C69bEe701ef814a2B6a3EDD4B4aBC2c79b3bF8e&address={wallet_address}&tag=latest"
       response = requests.get(url)
