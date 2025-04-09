@@ -343,6 +343,8 @@ def update_google_sheet(sheet, start_row=2):
                 sheet.update_cell(i, 5, status)
             except Exception as e:
                 status = "Error"
+                balance = 0
+                staked_balance = 0
                 sheet.update_cell(i, 3, balance)
                 sheet.update_cell(i, 4, staked_balance)
                 sheet.update_cell(i, 5, status)
